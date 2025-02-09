@@ -1,0 +1,5 @@
+# User local IDEA configuration files
+.idea/
+.run/
+Thumbs.db
+.DS_Store
