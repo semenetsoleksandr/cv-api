@@ -1,36 +1,26 @@
 import cors from 'cors';
 import express from 'express';
-import {addSkillToBD, getSkillsFromBD, delIdFromDB} from "./sql.js";
+import {SkillsBD} from "./sql.js";
 
 const app = express();
 
-app.use(cors()); // Разрешает все запросы
+app.use(cors());
 
-const skills = await getSkillsFromBD()
+const db = new SkillsBD()
 
 async function main() {
     app.use(express.json())
-    app.get('/skills/', (req, res) => {
+    app.get('/skills/', async (req, res) => {
+        const skills = await db.getSkillsFromBD()
         res.send(skills).status(200)
     })
-    app.post('/skills', (req, res) => {
-        const {skill} = req.body;
-        let lastId = getLastId() + 1
-        let newSkill = {"id": lastId, "skill": skill}
-        let newSkillForDB = Object.values(req.body).toString()
-        addSkillToBD(lastId, newSkillForDB)
-        skills.push(newSkill);
-        res.status(201).json({skills});
+    app.post('/skills', async (req, res) => {
+        const newSkill = await db.addSkillToBD(req.body.skill)
+        res.status(201).json(newSkill);
     })
-    app.delete('/skills/:id', (req, res) => {
-        const id = req.params.id
-        delIdFromDB(id)
-        for (let i in skills) {
-            if (skills[i].id == id) {
-                skills.splice(i, 1)
-            }
-        }
-        res.send(skills)
+    app.delete('/skills/:id', async (req, res) => {
+        await db.delIdFromDB(req.params.id)
+        res.sendStatus(204)
 
     })
     app.listen(8080, () => {
@@ -38,13 +28,4 @@ async function main() {
     })
 }
 
-function getLastId() {
-    let values = []
-    for (let i in skills) {
-        values.push(skills[i].id)
-    }
-    return Math.max(...values)
-}
-
-main().catch(console.error);
-getLastId()
+main()

@@ -3,6 +3,8 @@ import {promisify} from 'node:util'
 
 export class SkillsBD {
     db;
+    runQuery;
+    allQuery;
     tableName = 'skillsBD'
 
     constructor(props) {
@@ -12,6 +14,8 @@ export class SkillsBD {
             }
             console.log('connect')
         })
+        this.runQuery = promisify(this.db.run.bind(this.db))
+        this.allQuery = promisify(this.db.all.bind(this.db))
         this.init()
         //this.delTable()
     }
@@ -19,7 +23,7 @@ export class SkillsBD {
 
     async init() {
         await this.db.run(
-            `CREATE TABLE IF NOT EXISTS skillsBD
+            `CREATE TABLE IF NOT EXISTS ${this.tableName}
              (
                  id    INTEGER PRIMARY KEY AUTOINCREMENT,
                  skill TEXT
@@ -27,40 +31,34 @@ export class SkillsBD {
         );
     }
 
-    async delTable() {
-        await this.db.run(
-            `DROP TABLE skillsBD;`
-        );
+    async getSkillsFromBD() {
+        try {
+            return await this.allQuery(`SELECT *
+                                        FROM ${this.tableName}`, [])
+        } catch (err) {
+            console.log(err.message)
+            return [];
+        }
     }
 
     async addSkillToBD(newSkill) {
         try {
-            const asyncRun = promisify(this.db.run).bind(this.db);
-            await asyncRun('INSERT INTO skillsBD (skill) VALUES (?)', [newSkill])
+            await this.runQuery(`INSERT INTO ${this.tableName} (skill)
+                                 VALUES (?)`, [newSkill])
             return {id: id.lastID, newSkill}
         } catch (err) {
-            console.log('ttt')
+            console.log(err.message)
         }
     }
 
     async delIdFromDB(id) {
         try {
-            const asyncRun = promisify(this.db.run).bind(this.db)
-            return await asyncRun('DELETE FROM skillsBD WHERE id = ?', [id])
+            return await this.runQuery(`DELETE
+                                        FROM ${this.tableName}
+                                        WHERE id = ?`, [id])
         } catch (err) {
             console.log(err.message)
         }
     }
-
-    async getSkillsFromBD() {
-        try {
-            const asyncAll = promisify(this.db.all).bind(this.db)
-            return await asyncAll('SELECT * FROM skillsBD', [])
-        } catch (err) {
-            console.log(err.message)
-        }
-
-    }
-
 }
 
