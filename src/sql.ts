@@ -1,14 +1,22 @@
-import sqlite3 from 'sqlite3';
+import sqlite3, {Database} from 'sqlite3';
 import {promisify} from 'node:util'
 
-export class SkillsBD {
-    db;
-    runQuery;
-    allQuery;
-    tableName = 'skillsBD'
+interface ISkill {
+    id: string;
+    skill: string;
+}
 
-    constructor(props) {
-        this.db = new sqlite3.Database('skills.db', (err) => {
+type CreateSkillRequest = Omit<ISkill, 'id'>
+
+
+export class SkillsBD {
+    db:Database;
+    runQuery: (sql: string) => Promise<void>
+    allQuery: (sql: string) => Promise<ISkill[]>
+    tableName:string = 'skillsBD'
+
+    constructor() {
+        this.db = new sqlite3.Database('../skills.db', (err) => {
             if (err) {
                 console.log(err.message);
             }
@@ -21,7 +29,7 @@ export class SkillsBD {
     }
 
 
-    async init() {
+    async init()  {
         await this.runQuery(
             `CREATE TABLE IF NOT EXISTS ${this.tableName}
              (
@@ -30,30 +38,29 @@ export class SkillsBD {
              )`
         );
     }
-
-    async getSkillsFromBD() {
+    async getSkillsFromBD():Promise<ISkill[]>  {
         try {
             return await this.allQuery(`SELECT *
-                                        FROM ${this.tableName}`, [])
+                                        FROM ${this.tableName}`,[])
         } catch (err) {
             console.log(err.message)
             return [];
         }
     }
-
-    async addSkillToBD(newSkill) {
+    async addSkillToBD(skill: CreateSkillRequest ):Promise<ISkill| undefined>{
         try {
             await this.runQuery(`INSERT INTO ${this.tableName} (skill)
-                                 VALUES (?)`, [newSkill])
-            return {id: id.lastID, newSkill}
+                                 VALUES (?)`, [skill])
+            return {id: id.lastID, skill}
         } catch (err) {
             console.log(err.message)
+
         }
     }
 
-    async delIdFromDB(id) {
+    async delIdFromDB<T>(id:T): Promise<void> {
         try {
-            return await this.runQuery(`DELETE
+            return  await this.runQuery(`DELETE
                                         FROM ${this.tableName}
                                         WHERE id = ?`, [id])
         } catch (err) {

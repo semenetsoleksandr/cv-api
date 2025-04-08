@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "dev": "node main.js"
+        "dev": "node dist/main.js"
     },
     "keywords": [],
     "author": "",
@@ -13,6 +13,12 @@
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^4.21.2",
-        "sqlite3": "^5.1.7"
+        "sqlite3": "^5.1.7",
+        "tslib": "^2.8.1"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.1",
+        "typescript": "^5.8.3"
     }
 }
