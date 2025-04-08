@@ -8,7 +8,7 @@ app.use(cors());
 
 const db = new SkillsBD()
 
-async function main() {
+async function main():Promise<void> {
     app.use(express.json())
     app.get('/skills/', async (req, res) => {
         const skills = await db.getSkillsFromBD()
@@ -21,11 +21,10 @@ async function main() {
     app.delete('/skills/:id', async (req, res) => {
         await db.delIdFromDB(req.params.id)
         res.sendStatus(204)
-
     })
     app.listen(8080, () => {
         console.log('server is run on port 8080')
     })
 }
 
-main()
+main().catch(console.error)

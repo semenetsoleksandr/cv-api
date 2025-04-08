@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "ES2017", // или "ESNext"
+        "module": "ESNext", // Для работы с модулями ES
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "outDir": "./dist", // Папка для выходных файлов
+        "strict": true
+    }
+}
