@@ -1,8 +1,8 @@
 import sqlite3 from 'sqlite3';
-import { promisify } from 'node:util';
-import { ISkill } from './types';
+import {promisify} from 'node:util';
+import {ISkill} from './types';
 
-const { Database } = sqlite3;
+const {Database} = sqlite3;
 
 export class SkillsBD {
     db: sqlite3.Database;
@@ -27,24 +27,24 @@ export class SkillsBD {
     async init() {
         await this.runQuery(
             `CREATE TABLE IF NOT EXISTS ${this.tableName}
-       (
-           id
-           INTEGER
-           PRIMARY
-           KEY
-           AUTOINCREMENT,
-           skill
-           TEXT
-           NOT
-           NULL
-       )`,
+             (
+                 id
+                 INTEGER
+                 PRIMARY
+                 KEY
+                 AUTOINCREMENT,
+                 skill
+                 TEXT
+                 NOT
+                 NULL
+             )`,
         );
     }
 
     async getSkillsFromBD(): Promise<ISkill[]> {
         try {
             return await this.allQuery(`SELECT *
-                                  FROM ${this.tableName}`, []);
+                                        FROM ${this.tableName}`, []);
         } catch (err) {
             console.log((err as Error).message);
             return [];
@@ -57,13 +57,13 @@ export class SkillsBD {
             return new Promise((resolve, reject) => {
                 this.db.run(
                     `INSERT INTO ${this.tableName} (skill)
-           VALUES (?)`,
+                     VALUES (?)`,
                     [skill],
                     function (err) {
                         if (err) {
                             reject(err);
                         } else {
-                            resolve({ id: this.lastID, skill }); // Return inserted object with ID
+                            resolve({id: this.lastID, skill}); // Return inserted object with ID
                         }
                     },
                 );
@@ -76,8 +76,18 @@ export class SkillsBD {
     async delIdFromDB<T>(id: T): Promise<void> {
         try {
             return await this.runQuery(`DELETE
-                                  FROM ${this.tableName}
-                                  WHERE id = ?`, [id]);
+                                        FROM ${this.tableName}
+                                        WHERE id = ?`, [id]);
+        } catch (err) {
+            console.log((err as Error).message);
+        }
+    }
+
+    async patchSkill(id:number, skill:string) {
+        try {
+            return await this.runQuery(`UPDATE ${this.tableName}
+                                        SET skill = ?
+                                        WHERE id = ?`, [skill, id])
         } catch (err) {
             console.log((err as Error).message);
         }
