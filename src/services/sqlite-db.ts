@@ -94,3 +94,4 @@ export class SkillsBD {
     }
 }
 
+export const db = new SkillsBD();

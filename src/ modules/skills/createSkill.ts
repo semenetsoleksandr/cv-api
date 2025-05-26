@@ -1,8 +1,10 @@
+import { Request, Response } from 'express';
+
 import {SkillsBD} from "../../services/sqlite-db";
 
-const db = new SkillsBD()
+import {db} from "../../services/sqlite-db";
 
-export const createSkillRoute = async (req: any, res: any) => {
+export const createSkillRoute = async (req: Request, res: Response) => {
     const newSkill = await db.addSkillToBD(req.body.skill);
     res.status(201).json(newSkill);
 };
