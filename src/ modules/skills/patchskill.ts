@@ -1,5 +1,3 @@
-import {SkillsBD} from "../../services/sqlite-db";
-
 import {db} from "../../services/sqlite-db";
 
 export const patchSkillRoute = async (req: any, res: any) => {

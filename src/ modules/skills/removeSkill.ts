@@ -1,5 +1,3 @@
-import {SkillsBD} from "../../services/sqlite-db";
-
 import {db} from "../../services/sqlite-db";
 
 export const removeSkillRoute = async (req:any , res:any) => {

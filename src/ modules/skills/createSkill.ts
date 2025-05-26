@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 
-import {SkillsBD} from "../../services/sqlite-db";
-
 import {db} from "../../services/sqlite-db";
 
 export const createSkillRoute = async (req: Request, res: Response) => {
