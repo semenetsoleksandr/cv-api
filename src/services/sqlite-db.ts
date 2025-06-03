@@ -1,11 +1,9 @@
-import sqlite3 from 'sqlite3';
-import {promisify} from 'node:util';
-import {ISkill} from './types';
-
-const {Database} = sqlite3;
+import { Database } from 'sqlite3';
+import { promisify } from 'node:util';
+import { ISkill } from './types';
 
 export class SkillsBD {
-    db: sqlite3.Database;
+    db: Database;
     runQuery: (sql: string, params?: object | any[]) => Promise<void>;
     allQuery: (sql: string, params?: object | any[]) => Promise<ISkill[]>;
     tableName: string = 'skillsBD';
@@ -63,7 +61,7 @@ export class SkillsBD {
                         if (err) {
                             reject(err);
                         } else {
-                            resolve({id: this.lastID, skill}); // Return inserted object with ID
+                            resolve({ id: this.lastID, skill }); // Return inserted object with ID
                         }
                     },
                 );
@@ -83,11 +81,11 @@ export class SkillsBD {
         }
     }
 
-    async patchSkill(id:number, skill:string) {
+    async patchSkill(id: number, skill: string) {
         try {
             return await this.runQuery(`UPDATE ${this.tableName}
                                         SET skill = ?
-                                        WHERE id = ?`, [skill, id])
+                                        WHERE id = ?`, [skill, id]);
         } catch (err) {
             console.log((err as Error).message);
         }
