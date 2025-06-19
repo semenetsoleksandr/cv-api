@@ -1,6 +1,6 @@
-import { Database } from 'sqlite3';
-import { promisify } from 'node:util';
-import { ISkill } from './types';
+import {Database} from 'sqlite3';
+import {promisify} from 'node:util';
+import {ISkill} from './types';
 
 export class SkillsBD {
     db: Database;
@@ -32,17 +32,33 @@ export class SkillsBD {
                  KEY
                  AUTOINCREMENT,
                  skill
+                 TEXT,
+                 username
+                 TEXT,
+                 email
+                 TEXT,
+                 message
                  TEXT
-                 NOT
-                 NULL
              )`,
         );
     }
 
     async getSkillsFromBD(): Promise<ISkill[]> {
         try {
-            return await this.allQuery(`SELECT *
-                                        FROM ${this.tableName}`, []);
+            return await this.allQuery(`SELECT id, skill
+                                        FROM ${this.tableName}
+                                        WHERE skill IS NOT NULL `, []);
+        } catch (err) {
+            console.log((err as Error).message);
+            return [];
+        }
+    }
+
+    async getMessagessFromBD(): Promise<ISkill[]> {
+        try {
+            return await this.allQuery(`SELECT id, username, email, message
+                                        FROM ${this.tableName}
+                                        WHERE skill IS NULL `, []);
         } catch (err) {
             console.log((err as Error).message);
             return [];
@@ -61,7 +77,29 @@ export class SkillsBD {
                         if (err) {
                             reject(err);
                         } else {
-                            resolve({ id: this.lastID, skill }); // Return inserted object with ID
+                            resolve({id: this.lastID, skill}); // Return inserted object with ID
+                        }
+                    },
+                );
+            });
+        } catch (err) {
+            console.log((err as Error).message);
+        }
+    }
+
+    async addMessageToBD(username: string, email: string, message: string): Promise<ISkill | undefined> {
+        try {
+            // unfortunately we can't use promisify to be able to access this.lastID property in result :(
+            return new Promise((resolve, reject) => {
+                this.db.run(
+                    `INSERT INTO ${this.tableName} (username, email, message)
+                     VALUES (?, ?, ?)`,
+                    [username, email, message],
+                    function (err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve({id: this.lastID, username, email, message}); // Return inserted object with ID
                         }
                     },
                 );
