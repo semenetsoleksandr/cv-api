@@ -119,7 +119,7 @@ export class SkillsBD {
         }
     }
 
-    async patchSkill(id: number, skill: string) {
+    async patchSkill<T>(id: T, skill: T): Promise<void>  {
         try {
             return await this.runQuery(`UPDATE ${this.tableName}
                                         SET skill = ?
