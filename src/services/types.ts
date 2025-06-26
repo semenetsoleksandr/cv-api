@@ -1,4 +1,7 @@
 export interface ISkill {
     id: number;
-    skill: string;
+    skill?: string;
+    username?: string;
+    email?: string;
+    message?: string;
 }

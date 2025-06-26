@@ -2,10 +2,10 @@
     "name": "cv-api",
     "version": "1.0.0",
     "description": "Cv-api",
-    "main": "index.js",
-    "type": "module",
+    "main": "dist/app.js",
     "scripts": {
-        "dev": "node dist/main.js"
+        "build": "tsc",
+        "start": "node dist/app.js"
     },
     "keywords": [],
     "author": "",
@@ -13,12 +13,14 @@
     "dependencies": {
         "cors": "^2.8.5",
         "express": "^4.21.2",
+        "express-validator": "^7.2.1",
         "sqlite3": "^5.1.7",
         "tslib": "^2.8.1"
     },
     "devDependencies": {
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.1",
+        "@types/node": "^22.15.29",
         "typescript": "^5.8.3"
     }
 }
