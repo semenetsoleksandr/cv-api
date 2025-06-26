@@ -1,26 +1,35 @@
 {
-    "name": "cv-api",
-    "version": "1.0.0",
-    "description": "Cv-api",
-    "main": "dist/app.js",
-    "scripts": {
-        "build": "tsc",
-        "start": "node dist/app.js"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "cors": "^2.8.5",
-        "express": "^4.21.2",
-        "express-validator": "^7.2.1",
-        "sqlite3": "^5.1.7",
-        "tslib": "^2.8.1"
-    },
-    "devDependencies": {
-        "@types/cors": "^2.8.17",
-        "@types/express": "^5.0.1",
-        "@types/node": "^22.15.29",
-        "typescript": "^5.8.3"
-    }
+  "name": "cv-api",
+  "version": "1.0.0",
+  "description": "Cv-api",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc -c tsconfig.app.json",
+    "start": "node dist/app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "sqlite3": "^5.1.7",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.15.29",
+    "jest": "^30.0.3",
+    "jest-environment-node": "^30.0.2",
+    "jest-mock-req-res": "^1.0.2",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
 }

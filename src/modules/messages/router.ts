@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {getMessagesRoute} from "./getMessage";
+import {getMessagesRoute} from "./getMessage/getMessage";
 import {createMessageRoute} from "./createMessage";
 import handleValidationErrors from "../../middlware/handleValidationErrors";
 import {validateCreateMessageRequest} from "./validation";

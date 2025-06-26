@@ -2,6 +2,7 @@
 .idea/
 .run/
 dist/
+coverage/
 node_modules/
 skills.db
 Thumbs.db
