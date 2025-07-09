@@ -1,11 +1,11 @@
-import { body, param } from 'express-validator';
+import { body, param } from "express-validator";
 
 export const validateCreateSkillRequest = [
-    body('skill').isString().notEmpty().withMessage('Name is required'),
+    body("skill").isString().notEmpty().withMessage("Name is required"),
 ];
 
 export const validateRemoveSkillIRequest = [
-    param('id').isInt().withMessage('ID must be an integer'),
+    param("id").isInt().withMessage("ID must be an integer"),
 ];
 
 export const validatePatchSkillIRequest = [

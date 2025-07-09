@@ -9,6 +9,6 @@ import {removeMessageRoute} from "./removeMessage";
 
 export const messagesRouter = Router();
 
-messagesRouter.get('/', getMessagesRoute);
-messagesRouter.post('/', validateCreateMessageRequest, handleValidationErrors, createMessageRoute);
-messagesRouter.delete('/:id', validateRemoveSkillIRequest, handleValidationErrors, removeMessageRoute);
+messagesRouter.get("/", getMessagesRoute);
+messagesRouter.post("/", validateCreateMessageRequest, handleValidationErrors, createMessageRoute);
+messagesRouter.delete("/:id", validateRemoveSkillIRequest, handleValidationErrors, removeMessageRoute);

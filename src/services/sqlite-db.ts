@@ -1,20 +1,19 @@
-import {Database} from 'sqlite3';
-import {promisify} from 'node:util';
-import {IMessage, ISkill} from './types';
+import {Database} from "sqlite3";
+import {promisify} from "node:util";
 
 export class CvDB {
     db: Database;
     runQuery: (sql: string, params?: object | any[]) => Promise<void>;
     allQuery: <T> (sql: string, params?: any[]) => Promise<T[]>;
-    tableSkills: string = 'skillsDB';
+    tableSkills: string = "skillsDB";
     tableMessages: string = "messagesDB"
 
     constructor() {
-        this.db = new Database('../CV.db', (err) => {
+        this.db = new Database("../CV.db", (err) => {
             if (err) {
                 console.log(err.message);
             }
-            console.log('connect');
+            console.log("connect");
         });
         this.runQuery = promisify(this.db.run.bind(this.db));
         this.allQuery = promisify(this.db.all.bind(this.db)) as <T>(
@@ -70,8 +69,8 @@ export class CvDB {
 
     async addDataToBD<T>(tableName: string, columns: string[], values: string[]): Promise<T | undefined> {
         try {
-            const colList = columns.join(',')
-            const placeholders = columns.map(i => '?').join(',')
+            const colList = columns.join(",")
+            const placeholders = columns.map(i => "?").join(",")
             // unfortunately we can't use promisify to be able to access this.lastID property in result :(
             return new Promise((resolve, reject) => {
                 this.db.run(
