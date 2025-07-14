@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import {db} from "../../services/sqlite-db";
-import {IMessage} from "../../services/types";
+import {db} from "../../../services/sqlite-db";
+import {IMessage} from "../../../services/types";
 
 
 export const getMessagesRoute = async (req: Request, res: Response) => {
