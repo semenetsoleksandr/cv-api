@@ -56,7 +56,7 @@ export class CvDB {
     }
 
 
-    async getFromBD<T>(tableName: string): Promise<T[]> {
+    async getFromDB<T>(tableName: string): Promise<T[]> {
         try {
             return await this.allQuery<T>(`SELECT *
                                            FROM ${tableName}

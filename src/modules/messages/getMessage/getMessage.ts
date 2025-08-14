@@ -4,6 +4,10 @@ import {IMessage} from "../../../services/types";
 
 
 export const getMessagesRoute = async (req: Request, res: Response) => {
-    const message: IMessage[] = await db.getFromBD<IMessage>(db.tableMessages);
-    res.status(200).send(message);
+    try {
+        const message: IMessage[] = await db.getFromDB<IMessage>(db.tableMessages);
+        res.status(200).send(message);
+    } catch (error) {
+        res.status(500).json({error: "Failed to get messages"})
+    }
 };

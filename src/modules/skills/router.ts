@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { createSkillRoute } from "./createSkill";
-import { getSkillRoute } from "./getSkills";
-import { removeSkillRoute } from "./removeSkill";
+import { createSkillRoute } from "./createSkill/createSkill";
+import { getSkillRoute } from "./getSkills/getSkills";
+import { removeSkillRoute } from "./removeSkill/removeSkill";
 import {
     validateCreateSkillRequest,
     validatePatchSkillIRequest,
     validateRemoveSkillIRequest,
 } from "./validation";
 import handleValidationErrors from "../../middlware/handleValidationErrors";
-import { patchSkillRoute } from "./patchskill";
+import { patchSkillRoute } from "./patchSkil/patchSkill";
 
 export const skillsRouter = Router();
 

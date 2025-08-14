@@ -1,30 +1,30 @@
-import {removeMessageRoute} from "./removeMessage";
+import {mockRequest, mockResponse} from "jest-mock-req-res";
 
 jest.mock("../../../services/sqlite-db", () => ({
     db: {
         delIdFromDB: jest.fn(),
-        tableMessages: "messagesDB"
+        tableSkills: "skillsDB"
     }
 }));
-
 import {db} from "../../../services/sqlite-db";
-import {mockRequest, mockResponse} from "jest-mock-req-res";
+import {removeSkillRoute} from "./removeSkill";
+import {removeMessageRoute} from "../../messages/removeMessage/removeMessage";
 
-describe("removeMessageRoute", () => {
-    it("should remove messages from DB", async () => {
+describe("removeSkillRoute", () => {
+    it("should remove skill  from DB", async () => {
         const req = mockRequest({
             params: {
-                id: 99
+                id: 101
             }
         });
-        const res = mockResponse()
+        const res = mockResponse();
         res.sendStatus.mockReturnValue(res);
-        (db.delIdFromDB as jest.Mock).mockResolvedValue(undefined)
-        await removeMessageRoute(req,res)
+        (db.delIdFromDB as jest.Mock).mockResolvedValue(undefined);
+        await removeSkillRoute(req, res);
 
         expect(res.sendStatus).toHaveBeenCalledWith(204);
-        expect(db.delIdFromDB).toHaveBeenCalledWith("messagesDB",99)
-    })
+        expect(db.delIdFromDB).toHaveBeenCalledWith("skillsDB", 101);
+    });
     it("should return 500 on error", async () => {
         const req = mockRequest();
         const res = mockResponse()
@@ -32,14 +32,11 @@ describe("removeMessageRoute", () => {
         res.json.mockReturnValue(res);
 
         (db.delIdFromDB as jest.Mock).mockRejectedValue(new Error("DB error"))
-        await removeMessageRoute(req,res)
+        await removeSkillRoute(req,res)
 
         expect(res.status).toHaveBeenCalledTimes(1)
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({error: "Failed to remove message"})
+        expect(res.json).toHaveBeenCalledWith({error: "Failed to remove skill"})
 
     })
-
 })
-
-

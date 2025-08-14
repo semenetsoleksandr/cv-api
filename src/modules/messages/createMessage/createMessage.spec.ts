@@ -2,7 +2,7 @@ import {mockRequest, mockResponse} from "jest-mock-req-res";
 import {createMessageRoute} from "./createMessage"
 import {IMessage} from "../../../services/types";
 
-jest.mock('../../../services/sqlite-db', () => ({
+jest.mock("../../../services/sqlite-db", () => ({
     db: {
         addDataToBD: jest.fn(),
         tableMessages: "messagesDB"
@@ -11,7 +11,7 @@ jest.mock('../../../services/sqlite-db', () => ({
 import { db } from "../../../services/sqlite-db";
 
 describe("createMessagesRoute", () => {
-    it("should should add message to DB", async () => {
+    it("should add message to DB", async () => {
         const mockMessage: IMessage = {
             id: 99,
             username: "bob",
@@ -40,5 +40,20 @@ describe("createMessagesRoute", () => {
         )
         expect(res.json).toHaveBeenCalledWith(mockMessage)
         expect(mockMessage.username).toBe(req.body.username)
+    })
+    it("should return 500 on error", async () => {
+        const req = mockRequest();
+        const res = mockResponse();
+
+        res.status.mockReturnValue(res);
+        res.json.mockReturnValue(res);
+        res.json.mockReturnValue(res);
+
+        (db.addDataToBD as jest.Mock).mockRejectedValue(new Error("DB error"));
+        await createMessageRoute(req, res);
+
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({error: "Failed to create message"});
     })
 })
