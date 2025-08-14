@@ -1,7 +1,12 @@
 export interface ISkill {
     id: number;
-    skill?: string;
-    username?: string;
-    email?: string;
-    message?: string;
+    skill: string;
 }
+
+export interface IMessage {
+    id: number;
+    username: string;
+    email: string;
+    message: string;
+}
+

@@ -9,11 +9,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(logRequest)
-app.use('/skills', skillsRouter)
-app.use('/messages', messagesRouter)
+app.use("/skills", skillsRouter)
+app.use("/messages", messagesRouter)
 
-app.listen(8080, () => {
-
-    console.log('Server is running on port 8080');
-
-});
+export default app

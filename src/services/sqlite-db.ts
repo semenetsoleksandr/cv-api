@@ -1,30 +1,32 @@
-import {Database} from 'sqlite3';
-import {promisify} from 'node:util';
-import {ISkill} from './types';
+import {Database} from "sqlite3";
+import {promisify} from "node:util";
 
-export class SkillsBD {
+export class CvDB {
     db: Database;
     runQuery: (sql: string, params?: object | any[]) => Promise<void>;
-    allQuery: (sql: string, params?: object | any[]) => Promise<ISkill[]>;
-    tableName: string = 'skillsBD';
+    allQuery: <T> (sql: string, params?: any[]) => Promise<T[]>;
+    tableSkills: string = "skillsDB";
+    tableMessages: string = "messagesDB"
 
     constructor() {
-        this.db = new Database('../skills.db', (err) => {
+        this.db = new Database("../CV.db", (err) => {
             if (err) {
                 console.log(err.message);
             }
-            console.log('connect');
+            console.log("connect");
         });
         this.runQuery = promisify(this.db.run.bind(this.db));
-        this.allQuery = promisify(this.db.all.bind(this.db));
+        this.allQuery = promisify(this.db.all.bind(this.db)) as <T>(
+            sql: string,
+            params?: string[]
+        ) => Promise<T[]>;
         this.init();
-        //this.delTable()
     }
 
 
     async init() {
         await this.runQuery(
-            `CREATE TABLE IF NOT EXISTS ${this.tableName}
+            `CREATE TABLE IF NOT EXISTS ${this.tableSkills}
              (
                  id
                  INTEGER
@@ -32,7 +34,17 @@ export class SkillsBD {
                  KEY
                  AUTOINCREMENT,
                  skill
-                 TEXT,
+                 TEXT
+             )`,
+        );
+        await this.runQuery(
+            `CREATE TABLE IF NOT EXISTS ${this.tableMessages}
+             (
+                 id
+                 INTEGER
+                 PRIMARY
+                 KEY
+                 AUTOINCREMENT,
                  username
                  TEXT,
                  email
@@ -43,41 +55,37 @@ export class SkillsBD {
         );
     }
 
-    async getSkillsFromBD(): Promise<ISkill[]> {
+
+    async getFromDB<T>(tableName: string): Promise<T[]> {
         try {
-            return await this.allQuery(`SELECT id, skill
-                                        FROM ${this.tableName}
-                                        WHERE skill IS NOT NULL `, []);
+            return await this.allQuery<T>(`SELECT *
+                                           FROM ${tableName}
+            `, []);
         } catch (err) {
             console.log((err as Error).message);
             return [];
         }
     }
 
-    async getMessagessFromBD(): Promise<ISkill[]> {
+    async addDataToBD<T>(tableName: string, columns: string[], values: string[]): Promise<T | undefined> {
         try {
-            return await this.allQuery(`SELECT id, username, email, message
-                                        FROM ${this.tableName}
-                                        WHERE skill IS NULL `, []);
-        } catch (err) {
-            console.log((err as Error).message);
-            return [];
-        }
-    }
-
-    async addSkillToBD(skill: string): Promise<ISkill | undefined> {
-        try {
+            const colList = columns.join(",")
+            const placeholders = columns.map(i => "?").join(",")
             // unfortunately we can't use promisify to be able to access this.lastID property in result :(
             return new Promise((resolve, reject) => {
                 this.db.run(
-                    `INSERT INTO ${this.tableName} (skill)
-                     VALUES (?)`,
-                    [skill],
+                    `INSERT INTO ${tableName} (${colList})
+                     VALUES (${placeholders})`,
+                    values,
                     function (err) {
                         if (err) {
                             reject(err);
                         } else {
-                            resolve({id: this.lastID, skill}); // Return inserted object with ID
+                            const result: any = {id: this.lastID};
+                            columns.forEach((col, ind) => {
+                                result[col] = values[ind]
+                            })
+                            resolve(result as T);// Return inserted object with ID
                         }
                     },
                 );
@@ -87,41 +95,20 @@ export class SkillsBD {
         }
     }
 
-    async addMessageToBD(username: string, email: string, message: string): Promise<ISkill | undefined> {
-        try {
-            // unfortunately we can't use promisify to be able to access this.lastID property in result :(
-            return new Promise((resolve, reject) => {
-                this.db.run(
-                    `INSERT INTO ${this.tableName} (username, email, message)
-                     VALUES (?, ?, ?)`,
-                    [username, email, message],
-                    function (err) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve({id: this.lastID, username, email, message}); // Return inserted object with ID
-                        }
-                    },
-                );
-            });
-        } catch (err) {
-            console.log((err as Error).message);
-        }
-    }
 
-    async delIdFromDB<T>(id: T): Promise<void> {
+    async delIdFromDB<T>(tableName: string, id: T): Promise<void> {
         try {
             return await this.runQuery(`DELETE
-                                        FROM ${this.tableName}
+                                        FROM ${tableName}
                                         WHERE id = ?`, [id]);
         } catch (err) {
             console.log((err as Error).message);
         }
     }
 
-    async patchSkill<T>(id: T, skill: T): Promise<void>  {
+    async patchSkill<T>(id: number | string, skill: string): Promise<void> {
         try {
-            return await this.runQuery(`UPDATE ${this.tableName}
+            return await this.runQuery(`UPDATE ${this.tableSkills}
                                         SET skill = ?
                                         WHERE id = ?`, [skill, id]);
         } catch (err) {
@@ -130,4 +117,4 @@ export class SkillsBD {
     }
 }
 
-export const db = new SkillsBD();
+export const db = new CvDB();
