@@ -6,5 +6,9 @@
         "moduleResolution": "node",
         "outDir": "./dist",
         "strict": true
-    }
+    },
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.spec.json" }
+    ]
 }

@@ -3,6 +3,7 @@
 .run/
 dist/
 node_modules/
+coverage/
 skills.db
 Thumbs.db
 .DS_Store
